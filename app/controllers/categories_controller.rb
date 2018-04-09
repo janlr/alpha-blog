@@ -1,4 +1,5 @@
 class CategoriesController < ApplicationController
+  before_action :require_admin, except: [:index, :show] 
   
   def index
     
@@ -45,7 +46,15 @@ class CategoriesController < ApplicationController
   def category_params
     params.require(:category).permit(:name)
    
-   
+  end
+  
+  
+  def require_admin
+    if !logged_in? || (logged_in? and !current_user.admin?)
+      flash[:danger] = "Only administrators can perform this function."
+      redirect_to categories_path
+      
+    end
     
   end
   
